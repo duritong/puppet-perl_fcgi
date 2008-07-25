@@ -12,6 +12,8 @@ class mod_fcgid {
 }
 
 class mod_fcgid::base {
+    $config_dir = '/etc/httpd/'
+
     package{'mod_fcgid':
         ensure => installed,
     }
@@ -19,6 +21,21 @@ class mod_fcgid::base {
     if $selinux {
         include mod_fcgid::selinux
     }
+
+    file{"${config_dir}/conf.d/fcgid.conf":
+        source => [ "puppet://$server/files/mod_fcgid/${fqdn}/ssl.conf",
+                    "puppet://$server/files/mod_fcgid/fcgid.conf",
+                    "puppet://$server/mod_fcgid/fcgid.conf"
+        ],
+        owner => root, group => 0, mode => 0644;
+    }
+    file{"${config_dir}/conf.d/php.conf":
+        ensure => absent
+    }
+    file{"${config_dir}/conf.d/perl.conf":
+        ensure => absent
+    }
+
 
 #    service{mod_fcgid:
 #        ensure => running,

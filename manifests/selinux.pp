@@ -14,5 +14,5 @@ class mod_fcgid::selinux::centos inherits mod_fcgid::selinux::base {
     package{'mod_fcgid-selinux':
         ensure => present,
     }
-    selinux::loadmodule {"mod_fcgid": }
+    selinux::loadmodule {"fastcgi": }
 }
