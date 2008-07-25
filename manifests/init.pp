@@ -1,36 +1,34 @@
-# modules/skeleton/manifests/init.pp - manage skeleton stuff
+# modules/mod_fcgid/manifests/init.pp - manage mod_fcgid stuff
 # Copyright (C) 2007 admin@immerda.ch
 # GPLv3
 
-# modules_dir { "skeleton": }
+# modules_dir { "mod_fcgid": }
 
-class skeleton {
+class mod_fcgid {
     case $operatingsystem {
-        gentoo: { include skeleton::gentoo }
-        default: { include skeleton::base }
+        centos: { include mod_fcgid::centos }
+        default: { include mod_fcgid::base }
     }
 }
 
-class skeleton::base {
-    package{'skeleton':
+class mod_fcgid::base {
+    package{'mod_fcgid':
         ensure => installed,
     }
 
-    service{skeleton:
-        ensure => running,
-        enable => true,
-        #hasstatus => true, #fixme!
-        require => Package[skeleton],
+    if $selinux {
+        include mod_fcgid::selinux
     }
+
+#    service{mod_fcgid:
+#        ensure => running,
+#        enable => true,
+#        #hasstatus => true, #fixme!
+#        require => Package[mod_fcgid],
+#    }
 
 }
 
-class skeleton::gentoo inherits skeleton::base {
-    Package[skeleton]{
-        category => 'some-category',
-    }
-
-    #conf.d file if needed
-    # needs module gentoo
-    #gentoo::etcconfd { skeleton: require => "Package[skeleton]", notify => "Service[skeleton]"}
+class mod_fcgid::centos inherits mod_fcgid::base {
 }
+
